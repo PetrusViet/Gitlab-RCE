@@ -13,7 +13,7 @@
 
 Ta có thể tiến hành kiểm tra bản [patch](https://github.com/gettalong/kramdown/commit/d6a1cbcb2caa2f8a70927f176070d126b2422760#diff-752a8043ae0220ab8bb4d8a91b3a623ad6775dd2ca958041cda185bc9f58d44a) của kramdown, và ta thấy sự khác biệt ở hàm `formatter_class` tại module `Kramdown::Converter::SyntaxHighlighter::Rouge`
 
-<img src="1.png">
+<img src="image/1.png">
 
 `::Rouge::Formatters.const_get(formatter)` đã chuyển thành `::Rouge::Formatters.const_get(formatter, false)`
 
@@ -234,7 +234,7 @@ def what?
 end
 ~~~
 ```
-<img src="2.png">
+<img src="image/2.png">
 
 - File `inmate.rb` đã được gọi. Như vậy chúng ta đã có vẻ gần như thành công PoC lại rồi nhỉ.
 
@@ -255,7 +255,7 @@ before_script:
 
 - Câu hỏi này ngay lập tức nhảy lên khi mình sửa file `.gitlab-ci.yml`. Mình đã cố gắng giải thích theo nhiều cách khác nhau: "Có thể có một cơ chế scan file .yml trươc khi nó được nạp vào?",.. nhưng chúng không làm mình thấy thỏa mãn...
 
-<img src="3.jpg">
+<img src="image/3.jpg">
 
 - Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server cũng là bug nghiêm trọng. Nhưng mình vẫn cảm thấy chưa đủ, có gì đó có vẻ như không ổn lắm. 
 
@@ -323,5 +323,8 @@ Sau đó lại sử dụng gem `get_process_mem` đã import phía trước đ�
 Như vậy, Không cần tìm địa chỉ của file payload attacker vẫn có thể RCE trên Gitlab Server
 
 
-REF: 
-  [1]
+Ref: 
+  - https://github.com/lyy289065406/CVE-2021-22192
+  - https://blog.csdn.net/smellycat000/article/details/109302520
+  - https://hackerone.com/reports/1125425
+  
