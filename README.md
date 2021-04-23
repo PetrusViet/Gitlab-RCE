@@ -86,7 +86,7 @@ kramdown (2.3.0)
 ```
 - install page
 ```
-install
+ bundle install
 ```
 Như vậy là chúng ta đã hoàn thành tạo một jekyll page. bây giờ chúng ta có thể đưa payload vào, để xem `Kramdown::Converter::SyntaxHighlighter::Rouge.call` có thực sự gọi được một method hay không.
 
@@ -214,6 +214,8 @@ end
 ```
 - Bùmm. Không có chuyện gì xảy ra cả, Class Hoosegow vẫn không được gọi.  =)))))))))
 
+<img src="image/27-500x500.jpg">
+
 - Mình stuck ở đây.. 1 tuần. Yeb, bay màu mất một tuần vì nó. Mình xoay vòng với câu hỏi: "Tại sao trong bundler đã có class Hoosegow, nhưng khi gọi lên từ dưới Kramdown lại không được? lẽ ra nó phải được chứ ???"
 - Đáp án không có gì phức tạp. Mình khai báo trong Gemfile như thế chưa đủ, phải khai báo gem trong group `jekyll_plugins` thì mới chịu :(
 
@@ -223,6 +225,8 @@ group :jekyll_plugins do
   gem "hoosegow"
 end
 ```
+<img src="image/14-500x500.jpg">
+
 - Mình tạo một file `inmate.rb` ở `C:/` rồi chạy payload:
 
 ```
@@ -237,6 +241,8 @@ end
 <img src="image/2.png">
 
 - File `inmate.rb` đã được gọi. Như vậy chúng ta đã có vẻ gần như thành công PoC lại rồi nhỉ.
+
+<img src="image/vo-tay.jpg">
 
 ### 3. Gitlab
 
@@ -259,11 +265,15 @@ before_script:
 
 - Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server cũng là bug nghiêm trọng. Nhưng mình vẫn cảm thấy chưa đủ, có gì đó có vẻ như không ổn lắm. 
 
+<img src="img/khong-on.jpg">
+
 - Mặc dầu chưa thấy thỏa mãn, mình bắt buộc phải dừng lại và chờ cho PoC được công bố để dành thời gian cho những nghiên cứu khác.
 
 ### PoC Được công bố
 
  Vào một ngày đẹp trời thì [PoC](https://hackerone.com/reports/1125425) đã được công bố. Đọc xong thì cảm giác con gà trong mình trỗi dậy mạnh mẽ khỏi phải bàn =)).
+ 
+ <img src="img/khoc.jpg">
  
  Vấn đề cốt lõi nằm trong kramdown thì chúng ta đã đi đúng, nhưng con đường đi tới nó ở Gitlab có vẻ hơi phèn =)
  
