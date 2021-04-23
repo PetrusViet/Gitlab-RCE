@@ -17,7 +17,7 @@ Ta có thể tiến hành kiểm tra bản [patch](https://github.com/gettalong/
 
 `::Rouge::Formatters.const_get(formatter)` đã chuyển thành `::Rouge::Formatters.const_get(formatter, false)`
 
-Hàm const_get() được kế thừa từ class Object, nó có thể lấy được các const. Nó thậm chí có thể trả về các class đã được khai báo trước đó mà nó có thể tìm thấy. Sự khác biệt ở đây chỉ là thêm 1 tham số `false`. Việc thêm tham số `false` vào sẽ kiến const_get không thể get được các const ở lớp cha hoặc các modules.
+Hàm `const_get` được kế thừa từ class Object, nó có thể lấy được các const. Nó thậm chí có thể trả về các class đã được khai báo trước đó mà nó có thể tìm thấy. Sự khác biệt ở đây chỉ là thêm 1 tham số `false`. Việc thêm tham số `false` vào sẽ kiến const_get không thể get được các const ở lớp cha hoặc các modules.
 Điều đặc biệt hơn nữa: tại hàm `self.call` có gọi tới hàm `formatter_class` rồi tiếp tục gọi `new(opts)`. Điều đó có nghĩa là method được get về thông qua `const_get` sẽ được gọi Constructor để khởi tạo. 
 
 ```ruby
@@ -115,11 +115,11 @@ end
  ```
  bundle exec jekyll serve
  ```
-  có thể bạn sẽ gặp lỗi "`require': cannot load such file -- webrick (LoadError)`" bạn cần thêm `gem "webrick"` vào Genfile
+  *có thể bạn sẽ gặp lỗi "`require': cannot load such file -- webrick (LoadError)`" bạn cần thêm `gem "webrick"` vào Gemfile*
  
  - Ta thấy thông báo lỗi `private method 'format' called for #<CSV io_type:Hash encoding:UTF-8 lineno:0 col_sep:` Điều này chứng tỏ rằng class CSV đã được gọi tới.
 
-#### Việc tiếp theo là xác định mình sẽ chọn method nào để khi gọi contructor thì method đó có thể gây ra RCE?
+#### Việc tiếp theo là xác định mình sẽ chọn method nào để khi gọi contructor thì có thể gây ra RCE?
 
 Theo một bài viết phân tích [CVE-2020-10518](https://blog.csdn.net/smellycat000/article/details/109302520) sử dụng bug ở kramdown để gây ra RCE trên Github. Mình taget tới class Hoosegow:
 - Ta thấy tại hàm `initialize` của Hoosegow có gọi tới `load_inmate_methods`
@@ -217,7 +217,10 @@ end
 <img src="image/27-500x500.jpg">
 
 - Mình stuck ở đây.. 1 tuần. Yeb, bay màu mất một tuần vì nó. Mình xoay vòng với câu hỏi: "Tại sao trong bundler đã có class Hoosegow, nhưng khi gọi lên từ dưới Kramdown lại không được? lẽ ra nó phải được chứ ???"
-- Đáp án không có gì phức tạp. Mình khai báo trong Gemfile như thế chưa đủ, phải khai báo gem trong group `jekyll_plugins` thì mới chịu :(
+
+- Mình nghĩ: "Nếu đã khai báo trong Gemfile rồi, thì có nghĩa trong class path đã có class đỏ rồi. Vậy nếu chương trình vẫn không tìm thấy 'Hoosegow' thì chắc chắn là nó chưa được load lên...". Vậy còn cách nào để khai báo gem, để khi khởi chạy jekyll load gem trước khi xử lý các phần khác trong source directory ?
+
+- Mình đọc docs của jekyll và tìm thấy [jekyll_plugins](https://jekyllrb.com/docs/plugins/). Mình khai báo trong Gemfile như thế chưa đủ, phải khai báo gem trong group [`jekyll_plugins`](https://jekyllrb.com/docs/plugins/installation/) thì mới chịu :( vì khi khai báo gem nằm trong jekyll_plugins, gem sẽ được gọi một cách bất chấp trước khi jekyll xử lý những source khác. Ngay cả khi chỵ jekyll với safe mode.
 
 ```
 group :jekyll_plugins do
@@ -277,11 +280,13 @@ before_script:
  
  Vấn đề cốt lõi nằm trong kramdown thì chúng ta đã đi đúng, nhưng con đường đi tới nó ở Gitlab có vẻ hơi phèn =)
  
- - Tác giả đã phát hiện khi upload wiki page với file '\*.rmd' thì chương trình sẽ gọi `render_wiki_content` -> [`other_markup_unsafe`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.9.3-ee/app/helpers/markup_helper.rb#L145) -> `GitHub::Markup.render`. Như vậy file '\*.rmd' sẽ được render với kramdown. Mình đã thử test với wiki, nhưng wiki sử dụng file '.md' chúng bị giới hạn tính năng nên mình đã miss case này :(
- - Tác giả đã up file '.rmd' của mình bằng cách clone wiki page về local, rồi sau đó sử dụng git để push wiki page lên gitlab.
+ - Tác giả đã phát hiện khi upload wiki page với file '\*.rmd' thì chương trình sẽ gọi `render_wiki_content` -> [`other_markup_unsafe`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.9.3-ee/app/helpers/markup_helper.rb#L145) -> `GitHub::Markup.render`. Như vậy file '\*.rmd' sẽ được render với kramdown.
+ - Khi nhảy qua Gitlab để tìm con đường gọi xuống kramdown, mình thấy Gitlab có tình năng wiki pages, ở đây nó cho phép mình sử dụng format kramdown. Nên mình nghi ngờ và thử test ở đây, nhưng không có kết quả do mình chỉ đưa payload vào file '\*.md', mà file '\*.md' lại bị hạn chế tính năng cần thiết nên mình đã bỏ qua con đường này :(
+ 
+ - Tác giả đã up file '.rmd' của mình bằng cách clone wiki page về local, rồi sau đó sử dụng git để push wiki page (kèm file '.rmd') lên gitlab.
  - Tác giả đã sử dụng class [`Redis`](https://github.com/redis/redis-rb) (đã được khai báo sẵn ở prject Gitlab, thể nên ta có thể gọi và sử dụng class này) để chạy payload của mình.
  
- Khi khởi tạo class `Redis`, nếu có tồn tại option `driver` thì chương trình sẽ gọi tới hàm `_parse_driver`. Tại đây, chương trình `require "connection/#{driver}"` ta có tác động vào biến `driver` để chương trình gọi tới file payload mà mình tải lên server.
+ Khi khởi tạo class `Redis`, nếu có tồn tại option `driver` thì chương trình sẽ gọi tới hàm `_parse_driver`. Tại đây, chương trình `require "connection/#{driver}"` ta có thể tác động vào biến `driver` để chương trình gọi tới file payload mà mình tải lên server.
 ```ruby
 def _parse_driver(driver)
       driver = driver.to_s if driver.is_a?(Symbol)
