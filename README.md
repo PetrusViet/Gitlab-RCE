@@ -265,7 +265,7 @@ before_script:
 
 - Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server cũng là bug nghiêm trọng. Nhưng mình vẫn cảm thấy chưa đủ, có gì đó có vẻ như không ổn lắm. 
 
-<img src="img/khong-on.jpg">
+<img src="image/khong-on.jpg">
 
 - Mặc dầu chưa thấy thỏa mãn, mình bắt buộc phải dừng lại và chờ cho PoC được công bố để dành thời gian cho những nghiên cứu khác.
 
@@ -273,7 +273,7 @@ before_script:
 
  Vào một ngày đẹp trời thì [PoC](https://hackerone.com/reports/1125425) đã được công bố. Đọc xong thì cảm giác con gà trong mình trỗi dậy mạnh mẽ khỏi phải bàn =)).
  
- <img src="img/khoc.jpg">
+ <img src="image/khoc.jpg">
  
  Vấn đề cốt lõi nằm trong kramdown thì chúng ta đã đi đúng, nhưng con đường đi tới nó ở Gitlab có vẻ hơi phèn =)
  
