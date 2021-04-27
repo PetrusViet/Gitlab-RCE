@@ -261,7 +261,7 @@ before_script:
 ```
 - Điều này cho phép ta biết được project của chúng ta được lưu trữ tại đâu. Từ đó tạo được payload của mình :)
 
-#### Tại sao chúng ta có quyền sửa file .gitlab-ci.yml, với khả năng inject command rồi, thì còn phải mất công viết PoC làm gì nữa ? Phải chăng mình đang đi vào con đường self RCE
+#### Tại sao chúng ta có quyền sửa file .gitlab-ci.yml, với khả năng inject command rồi, thì còn phải mất công viết PoC làm gì nữa ? Phải chăng mình đang đi vào con đường self RCE ?
 
 - Câu hỏi này ngay lập tức nhảy lên khi mình sửa file `.gitlab-ci.yml`. Mình đã cố gắng giải thích theo nhiều cách khác nhau: "Có thể có một cơ chế scan file .yml trươc khi nó được nạp vào?",.. nhưng chúng không làm mình thấy thỏa mãn...
 
