@@ -266,11 +266,13 @@ before_script:
 
 <img src="image/3.jpg">
 
-- Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server cũng là bug nghiêm trọng. Nhưng mình vẫn cảm thấy chưa đủ, có gì đó có vẻ như không ổn lắm. 
+- Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server không có nghiêm trọng lắm, vì nó chỉ dừng lại ở self RCE. Có gì đó có vẻ như không ổn lắm. 
 
 <img src="image/khong-on.jpg">
 
-- Mặc dầu chưa thấy thỏa mãn, mình bắt buộc phải dừng lại và chờ cho PoC được công bố để dành thời gian cho những nghiên cứu khác.
+- Mình tìm tới một con đường input khác đó là wiki page. Wiki page cho phép mình sử dụng format kramdown nên mình nghi ngờ và thử test ở đây, nhưng không có kết quả do mình chỉ đưa payload vào file default '\*.md', mà file '\*.md' lại bị hạn chế tính năng cần thiết nên mình đã bỏ qua con đường này :(
+
+- Đến đây mình bắt buộc phải dừng lại và chờ cho PoC được công bố để dành thời gian cho những nghiên cứu khác.
 
 ### PoC Được công bố
 
@@ -281,7 +283,6 @@ before_script:
  Vấn đề cốt lõi nằm trong kramdown thì chúng ta đã đi đúng, nhưng con đường đi tới nó ở Gitlab có vẻ hơi phèn =)
  
  - Tác giả đã phát hiện khi upload wiki page với file '\*.rmd' thì chương trình sẽ gọi `render_wiki_content` -> [`other_markup_unsafe`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.9.3-ee/app/helpers/markup_helper.rb#L145) -> `GitHub::Markup.render`. Như vậy file '\*.rmd' sẽ được render với kramdown.
- - Khi nhảy qua Gitlab để tìm con đường gọi xuống kramdown, mình thấy Gitlab có tình năng wiki pages, ở đây nó cho phép mình sử dụng format kramdown. Nên mình nghi ngờ và thử test ở đây, nhưng không có kết quả do mình chỉ đưa payload vào file '\*.md', mà file '\*.md' lại bị hạn chế tính năng cần thiết nên mình đã bỏ qua con đường này :(
  
  - Tác giả đã up file '.rmd' của mình bằng cách clone wiki page về local, rồi sau đó sử dụng git để push wiki page (kèm file '.rmd') lên gitlab.
  - Tác giả đã sử dụng class [`Redis`](https://github.com/redis/redis-rb) (đã được khai báo sẵn ở prject Gitlab, thể nên ta có thể gọi và sử dụng class này) để chạy payload của mình.
