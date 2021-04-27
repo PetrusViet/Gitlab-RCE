@@ -249,7 +249,8 @@ end
 
 ### 3. Gitlab
 
-- Tại Gitlab, mình đã deploy jekyll page ở trên lên server gitlab của mình. Câu hỏi đặt ra là làm sao để đưa file `inmate.rb` lên server của Gitlab và biết được file inmate.rb mình vừa up lên nằm ở đâu ??
+- Ở Gitlab có tính năng Gitlab Page, tại đó mình có thể deploy jekyll page. Thế nên mình thử đưa payload ở dạng là 1 project jekyll page *(như phần trên)* lên deploy ở gitlab.
+- Câu hỏi đặt ra là làm sao để đưa file `inmate.rb` lên server của Gitlab và biết được file inmate.rb mình vừa up lên nằm ở đâu ??
 - Điều này khá đơn giản nếu chúng ta có quyền tạo project và deploy chúng lên gitlab. Ta có thể upload file inmate.rb lên chính project của mình rồi chỉnh sửa file [.gitlab-ci.yml](https://gitlab.com/pages/jekyll/-/blob/master/.gitlab-ci.yml)
 ```yml
 before_script:
@@ -260,7 +261,7 @@ before_script:
 ```
 - Điều này cho phép ta biết được project của chúng ta được lưu trữ tại đâu. Từ đó tạo được payload của mình :)
 
-#### Tại sao chúng ta có quyền sửa file .gitlab-ci.yml, với khả năng inject command rồi, thì còn phải mất công viết PoC làm gì nữa ?
+#### Tại sao chúng ta có quyền sửa file .gitlab-ci.yml, với khả năng inject command rồi, thì còn phải mất công viết PoC làm gì nữa ? Phải chăng mình đang đi vào con đường self RCE
 
 - Câu hỏi này ngay lập tức nhảy lên khi mình sửa file `.gitlab-ci.yml`. Mình đã cố gắng giải thích theo nhiều cách khác nhau: "Có thể có một cơ chế scan file .yml trươc khi nó được nạp vào?",.. nhưng chúng không làm mình thấy thỏa mãn...
 
@@ -269,6 +270,7 @@ before_script:
 - Mình tìm hiểu cách Gitlab deploy Gitlab Pages. Thì nhận thấy mỗi khi deploy mỗi page mới, hoặc có sự chỉnh sửa 1 file nào đó trong project pages thì Gitlab Runner server sẽ render project thành các trang web tĩnh, rồi đẩy chúng qua Gitlab Web server. Điều đó có nghĩa là hướng khai thác này tối đa chỉ có thể chiếm được Runner Server. Chiếm được Runner Server không có nghiêm trọng lắm, vì nó chỉ dừng lại ở self RCE. Có gì đó có vẻ như không ổn lắm. 
 
 <img src="image/khong-on.jpg">
+
 
 - Mình tìm tới một con đường input khác đó là wiki page. Wiki page cho phép mình sử dụng format kramdown nên mình nghi ngờ và thử test ở đây, nhưng không có kết quả do mình chỉ đưa payload vào file default '\*.md', mà file '\*.md' lại bị hạn chế tính năng cần thiết nên mình đã bỏ qua con đường này :(
 
