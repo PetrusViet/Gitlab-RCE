@@ -1,4 +1,4 @@
-# Phân tích lỗ hổng CVE-2021-22192 trên Gitlab
+# Phân tích lỗ hổng RCE trên Gitlab (CVE-2021–22192)
 
 ## I) Building
 - Lỗi này xảy ra trên GitLab Community Edition (CE) và Enterprise Edition (EE) ở các phiên bản (>=13.2, <13.7.9), (>=13.8, <13.8.6) và (>=13.9, <13.9.4)
